@@ -7,6 +7,8 @@ router.post('/signup', controls.users.signup)
 
 router.post('/login', controls.users.login)
 
-router.delete('/logout', controls.users.logout)
+router.get('/logout', controls.users.logout)
+
+router.delete('/delete', controls.users.delUser)
 
 module.exports = router
