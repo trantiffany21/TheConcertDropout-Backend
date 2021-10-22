@@ -1,5 +1,4 @@
 const mongoose = require('mongoose')
-const { Users } = require('.')
 
 const usersSchema = new mongoose.Schema({
     username: {
