@@ -4,14 +4,20 @@ const bcrypt = require('bcrypt')
 
 const signup = (req, res) => {
     console.log('signup hit')
-    console.log(db.Users)
-    req.body.password = bcrypt.hashSync(req.body.password, bcrypt.genSaltSync(10))
 
-    db.Users.create(req.body, (error, createdAccount) => {
-        if (error) {
-            res.status(400).json({ error: error.message })
+    db.Users.findOne({username: req.body.username}, (error, foundOne) => {
+        if(foundOne) {
+            res.status(406).json({error: 'User already exists.'})
         } else {
-            res.status(201).json(createdAccount)
+            req.body.password = bcrypt.hashSync(req.body.password, bcrypt.genSaltSync(10))
+
+            db.Users.create(req.body, (error, createdAccount) => {
+                if (error) {
+                    res.status(400).json({ error: error.message })
+                } else {
+                    res.status(201).json(createdAccount)
+                }
+            })
         }
     })
 }
@@ -37,18 +43,24 @@ const login = (req, res) => {
 
 const logout = (req, res) => {
     console.log('logout hit')
+
     console.log(req.session)
     if (req.session.currentUser) {
-        req.session.destroy = null
+        req.session.destroy((error) => {
+            if(error) {
+                res.status(400).json({error: error.message})
+            }
+        })
         res.status(202).json('Successful logout.')
     } else {
-        res.status(404).json({error: 'No users login found.'})
+        res.status(404).json({error: 'No user login found.'})
     }
 }
 
 const delUser = (req, res) => {
     console.log('delete hit')
-    db.Users.findOneAndDelete({"username": req.session.currentUser}, (error, deleted) => {
+
+    db.Users.findOneAndDelete({"username": req.session.currentUser.username}, (error, deleted) => {
         if(error) {
             res.status(400).json({error: error.message})
         } else {
