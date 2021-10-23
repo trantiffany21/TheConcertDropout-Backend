@@ -8,7 +8,32 @@ const usersSchema = new mongoose.Schema({
     password: {
         type: String,
         require: true
-    }
+    }, 
+    performerId: {
+        type: String,
+        require: true
+    },
+    performerName: {
+        type: String,
+        require: true
+    },
+    type: {
+        type: String,
+    },
+    upcomingEvents: [{
+        title: {type: String}, //event name
+        url: {type: String},
+        venueName: {type: String},
+        performers: [{
+            performerId: {type: String},
+            name: {type: String},
+            url: {type: String},
+        }],
+        city: {type: String},
+        state: {type: String},
+        longitude: {type: String},
+        latitutude: {type: String},
+    }]
 })
 
 const Users = mongoose.model('Users', usersSchema)
