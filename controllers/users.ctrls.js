@@ -70,7 +70,13 @@ const delUser = (req, res) => {
         if (error) {
             res.status(400).json({ error: error.message })
         } else {
-            res.status(202).json(`Successfully deleted: ${deleted}`)
+            req.session.destroy((error) => {
+                if (error) {
+                    res.status(400).json({ error: error.message })
+                } else {
+                    res.status(202).json(`Successfully deleted: ${deleted}`)
+                }
+            })
         }
     })
 }
