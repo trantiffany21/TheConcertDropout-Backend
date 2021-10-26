@@ -10,6 +10,9 @@ const usersSchema = new mongoose.Schema({
         type: String,
         require: true
     }, 
+    email: {
+        type: String
+    },
     performers: [{
         id: {type: Number, unique: true},
         name: {type: String},
