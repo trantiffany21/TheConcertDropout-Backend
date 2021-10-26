@@ -24,7 +24,6 @@ const signup = (req, res) => {
 
 const login = (req, res) => {
     console.log('login hit')
-    console.log(req.session)
 
     if (req.session.currentUser) {
         res.status(400).json({ error: 'You are still logged in.' })
@@ -50,7 +49,6 @@ const login = (req, res) => {
 const logout = (req, res) => {
     console.log('logout hit')
 
-    console.log(req.session)
     if (req.session.currentUser) {
         req.session.destroy((error) => {
             if (error) {
