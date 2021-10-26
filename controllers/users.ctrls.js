@@ -63,6 +63,20 @@ const logout = (req, res) => {
     }
 }
 
+const getUser =(req,res) =>{
+    console.log('getUser hit')
+
+    if (req.session.currentUser) {
+        db.Users.find({username: req.params.username}, (error, user) => {
+            if(error) return res.status(400).json({ error: error.message });
+            
+            return res.status(200).json(user)
+          })
+    } else {
+        res.status(404).json({ error: 'No user login found.' })
+    }
+}
+
 const delUser = (req, res) => {
     console.log('delete hit')
 
@@ -187,9 +201,10 @@ module.exports = {
     signup,
     login,
     logout,
+    getUser,
     delUser,
     addArtist,
     removeArtist,
     addEvent,
-    removeEvent
+    removeEvent,
 }
