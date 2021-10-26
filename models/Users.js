@@ -9,17 +9,11 @@ const usersSchema = new mongoose.Schema({
         type: String,
         require: true
     }, 
-    performerId: {
-        type: String,
-        require: true
-    },
-    performerName: {
-        type: String,
-        require: true
-    },
-    type: {
-        type: String,
-    },
+    performers: [{
+        id: {type: Number},
+        name: {type: String},
+        type: {type: String}
+    }],
     upcomingEvents: [{
         title: {type: String}, //event name
         url: {type: String},

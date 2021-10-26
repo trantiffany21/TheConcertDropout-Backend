@@ -81,9 +81,37 @@ const delUser = (req, res) => {
     })
 }
 
+const addArtist = (req, res) => {
+    console.log('add artist hit')
+    console.log(req.session.currentUser)
+    if (req.session.currentUser) {
+        db.Users.findByIdAndUpdate(req.session.currentUser._id, {
+            $push: {
+                'performers': {
+                    name: req.body.name,
+                    id: req.body.id,
+                    type: req.body.type
+                }
+            }
+        }, { safe: true, upsert: true, new: true },
+            (error, updated) => {
+                if (error) {
+                    res.status(400).json({ error: error.message })
+                } else {
+                    res.status(200).json({ updated })
+                }
+            })
+    } else {
+        res.status(400).json('Please log in.')
+    }
+
+
+}
+
 module.exports = {
     signup,
     login,
     logout,
-    delUser
+    delUser,
+    addArtist
 }

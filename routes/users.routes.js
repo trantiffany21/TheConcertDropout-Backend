@@ -11,4 +11,6 @@ router.get('/logout', controls.users.logout)
 
 router.delete('/delete', controls.users.delUser)
 
+router.put('/addArtist', controls.users.addArtist)
+
 module.exports = router
