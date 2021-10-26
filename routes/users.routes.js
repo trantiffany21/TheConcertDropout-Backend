@@ -9,6 +9,8 @@ router.post('/login', controls.users.login)
 
 router.get('/logout', controls.users.logout)
 
+router.get('/:username', controls.users.getUser)
+
 router.delete('/delete', controls.users.delUser)
 
 router.put('/addArtist', controls.users.addArtist)
