@@ -3,14 +3,15 @@ const mongoose = require('mongoose')
 const usersSchema = new mongoose.Schema({
     username: {
         type: String,
-        require: true
+        require: true,
+        unique: true
     },
     password: {
         type: String,
         require: true
     }, 
     performers: [{
-        id: {type: Number},
+        id: {type: Number, unique: true},
         name: {type: String},
         type: {type: String}
     }],

@@ -83,7 +83,7 @@ const delUser = (req, res) => {
 
 const addArtist = (req, res) => {
     console.log('add artist hit')
-    console.log(req.session.currentUser)
+
     if (req.session.currentUser) {
         db.Users.findByIdAndUpdate(req.session.currentUser._id, {
             $push: {
@@ -104,14 +104,37 @@ const addArtist = (req, res) => {
     } else {
         res.status(400).json('Please log in.')
     }
-
-
 }
+
+const removeArtist = (req, res) => {
+    console.log('remove artist hit')
+
+    if (req.session.currentUser) {
+        db.Users.findByIdAndUpdate(req.session.currentUser._id, {
+            $pull: {
+                'performers': {
+                    id: req.body.id
+                }
+            }
+        }, { safe: true },
+            (error, removed) => {
+                if (error) {
+                    res.status(400).json({ error: error.message })
+                } else {
+                    res.status(202).json({ removed })
+                }
+            })
+    } else {
+        res.status(400).json('Please log in.')
+    }
+}
+
 
 module.exports = {
     signup,
     login,
     logout,
     delUser,
-    addArtist
+    addArtist,
+    removeArtist
 }
