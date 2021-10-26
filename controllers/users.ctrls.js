@@ -94,11 +94,11 @@ const addArtist = (req, res) => {
                 }
             }
         }, { safe: true, upsert: true, new: true },
-            (error, updated) => {
+            (error, added) => {
                 if (error) {
                     res.status(400).json({ error: error.message })
                 } else {
-                    res.status(200).json({ updated })
+                    res.status(200).json(`Artist added: ${added}`)
                 }
             })
     } else {
@@ -121,7 +121,60 @@ const removeArtist = (req, res) => {
                 if (error) {
                     res.status(400).json({ error: error.message })
                 } else {
-                    res.status(202).json({ removed })
+                    res.status(202).json(`Artist removed: ${removed}`)
+                }
+            })
+    } else {
+        res.status(400).json('Please log in.')
+    }
+}
+
+const addEvent = (req, res) => {
+    console.log('add event hit')
+
+    if (req.session.currentUser) {
+        db.Users.findByIdAndUpdate(req.session.currentUser._id, {
+            $push: {
+                'upcomingEvents': {
+                    title: req.body.title, 
+                    url: req.body.url,
+                    venueName: req.body.venueName,
+                    city: req.body.city,
+                    state: req.body.state,
+                    longitude: req.body.longitude,
+                    latitutude: req.body.latitutude,
+                    eventId: req.body.eventId
+                }
+            }
+        }, { safe: true, upsert: true, new: true },
+            (error, added) => {
+                if (error) {
+                    res.status(400).json({ error: error.message })
+                } else {
+                    res.status(200).json(`Event added: ${added}`)
+                }
+            })
+    } else {
+        res.status(400).json('Please log in.')
+    }
+}
+
+const removeEvent = (req, res) => {
+    console.log('remove event hit')
+
+    if (req.session.currentUser) {
+        db.Users.findByIdAndUpdate(req.session.currentUser._id, {
+            $pull: {
+                'upcomingEvents': {
+                    eventId: req.body.eventId
+                }
+            }
+        }, { safe: true },
+            (error, removed) => {
+                if (error) {
+                    res.status(400).json({ error: error.message })
+                } else {
+                    res.status(202).json(`Event removed: ${removed}`)
                 }
             })
     } else {
@@ -136,5 +189,7 @@ module.exports = {
     logout,
     delUser,
     addArtist,
-    removeArtist
+    removeArtist,
+    addEvent,
+    removeEvent
 }

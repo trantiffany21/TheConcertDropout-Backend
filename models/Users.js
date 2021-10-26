@@ -16,18 +16,14 @@ const usersSchema = new mongoose.Schema({
         type: {type: String}
     }],
     upcomingEvents: [{
-        title: {type: String}, //event name
+        title: {type: String},
         url: {type: String},
         venueName: {type: String},
-        performers: [{
-            performerId: {type: String},
-            name: {type: String},
-            url: {type: String},
-        }],
         city: {type: String},
         state: {type: String},
-        longitude: {type: String},
-        latitutude: {type: String},
+        longitude: {type: Number},
+        latitutude: {type: Number},
+        eventId: {type: Number, unique: true}
     }]
 })
 
