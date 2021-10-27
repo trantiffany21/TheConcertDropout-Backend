@@ -13,8 +13,9 @@ const signup = (req, res) => {
 
             db.Users.create(req.body, (error, createdAccount) => {
                 if (error) {
-                    res.status(400).json({ error: error.message })
+                    res.status(400).json({error: error.message})
                 } else {
+                    createdAccount.password = null
                     res.status(201).json(createdAccount)
                 }
             })
@@ -34,8 +35,8 @@ const login = (req, res) => {
             } else if (foundUser) {
                 if (bcrypt.compareSync(req.body.password, foundUser.password)) {
                     req.session.currentUser = foundUser
-                    console.log(req.session)
-                    res.status(202).json('Successful login.')
+                    foundUser.password = null
+                    res.status(202).json(foundUser)
                 } else {
                     res.status(404).json({ error: 'Invalid credentials.' })
                 }
@@ -193,7 +194,6 @@ const removeEvent = (req, res) => {
         res.status(400).json('Please log in.')
     }
 }
-
 
 module.exports = {
     signup,
