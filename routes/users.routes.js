@@ -17,8 +17,6 @@ router.put('/addArtist', controls.users.addArtist)
 
 router.delete('/removeArtist', controls.users.removeArtist)
 
-router.put('/addEvent', controls.users.addEvent)
-
-router.delete('/removeEvent', controls.users.removeEvent)
+router.put('/editUser', controls.users.editUser)
 
 module.exports = router

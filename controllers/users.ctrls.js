@@ -13,7 +13,7 @@ const signup = (req, res) => {
 
             db.Users.create(req.body, (error, createdAccount) => {
                 if (error) {
-                    res.status(400).json({error: error.message})
+                    res.status(400).json({ error: error.message })
                 } else {
                     createdAccount.password = null
                     res.status(201).json(createdAccount)
@@ -62,15 +62,15 @@ const logout = (req, res) => {
     }
 }
 
-const getUser =(req,res) =>{
+const getUser = (req, res) => {
     console.log('getUser hit')
 
     if (req.session.currentUser) {
-        db.Users.find({username: req.params.username}, (error, user) => {
-            if(error) return res.status(400).json({ error: error.message });
-            
+        db.Users.find({ username: req.params.username }, (error, user) => {
+            if (error) return res.status(400).json({ error: error.message });
+
             return res.status(200).json(user)
-          })
+        })
     } else {
         res.status(404).json({ error: 'No user login found.' })
     }
@@ -142,56 +142,20 @@ const removeArtist = (req, res) => {
     }
 }
 
-const addEvent = (req, res) => {
-    console.log('add event hit')
+const editUser = (req, res) => {
+    console.log('edit account hit')
 
     if (req.session.currentUser) {
+        req.body.password = bcrypt.hashSync(req.body.password, bcrypt.genSaltSync(10))
         db.Users.findByIdAndUpdate(req.session.currentUser._id, {
-            $push: {
-                'upcomingEvents': {
-                    title: req.body.title, 
-                    url: req.body.url,
-                    venueName: req.body.venueName,
-                    city: req.body.city,
-                    state: req.body.state,
-                    longitude: req.body.longitude,
-                    latitutude: req.body.latitutude,
-                    eventId: req.body.eventId
-                }
+            $set: { 'email': req.body.email, 'password': req.body.password, 'username': req.body.username }
+        }, { new: true }, (error, updated) => {
+            if (error) {
+                res.status(400).json({ error: error.message })
+            } else {
+                res.status(202).json(updated)
             }
-        }, { safe: true, upsert: true, new: true },
-            (error, added) => {
-                if (error) {
-                    res.status(400).json({ error: error.message })
-                } else {
-                    res.status(200).json(`Event added: ${added}`)
-                }
-            })
-    } else {
-        res.status(400).json('Please log in.')
-    }
-}
-
-const removeEvent = (req, res) => {
-    console.log('remove event hit')
-
-    if (req.session.currentUser) {
-        db.Users.findByIdAndUpdate(req.session.currentUser._id, {
-            $pull: {
-                'upcomingEvents': {
-                    eventId: req.body.eventId
-                }
-            }
-        }, { safe: true },
-            (error, removed) => {
-                if (error) {
-                    res.status(400).json({ error: error.message })
-                } else {
-                    res.status(202).json(`Event removed: ${removed}`)
-                }
-            })
-    } else {
-        res.status(400).json('Please log in.')
+        })
     }
 }
 
@@ -203,6 +167,5 @@ module.exports = {
     delUser,
     addArtist,
     removeArtist,
-    addEvent,
-    removeEvent,
+    editUser
 }
