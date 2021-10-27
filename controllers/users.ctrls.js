@@ -26,9 +26,9 @@ const signup = (req, res) => {
 const login = (req, res) => {
     console.log('login hit')
 
-    if (req.session.currentUser) {
-        res.status(400).json({ error: 'You are still logged in.' })
-    } else {
+    // if (req.session.currentUser) {
+    //     res.status(400).json({ error: 'You are still logged in.' })
+    // } else {
         db.Users.findOne({ username: req.body.username }, (error, foundUser) => {
             if (error) {
                 res.status(200).json({ error: error.message })
@@ -36,7 +36,7 @@ const login = (req, res) => {
                 if (bcrypt.compareSync(req.body.password, foundUser.password)) {
                     req.session.currentUser = foundUser
                     foundUser.password = null
-                    res.status(202).json(foundUser)
+                    return res.status(202).json(foundUser)
                 } else {
                     res.status(404).json({ error: 'Invalid credentials.' })
                 }
@@ -44,7 +44,7 @@ const login = (req, res) => {
                 res.status(404).json({ error: 'Invalid credentials.' })
             }
         })
-    }
+    //}
 }
 
 const logout = (req, res) => {
@@ -111,7 +111,7 @@ const addArtist = (req, res) => {
                 if (error) {
                     res.status(400).json({ error: error.message })
                 } else {
-                    res.status(200).json(`Artist added: ${added}`)
+                    return res.status(200).json(added)
                 }
             })
     } else {
