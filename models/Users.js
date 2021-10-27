@@ -14,7 +14,7 @@ const usersSchema = new mongoose.Schema({
         type: String
     },
     performers: [{
-        id: {type: Number, unique: true},
+        id: {type: Number},
         name: {type: String},
         type: {type: String}
     }],
@@ -26,7 +26,7 @@ const usersSchema = new mongoose.Schema({
         state: {type: String},
         longitude: {type: Number},
         latitutude: {type: Number},
-        eventId: {type: Number, unique: true}
+        eventId: {type: Number}
     }]
 })
 
