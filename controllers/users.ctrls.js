@@ -35,7 +35,8 @@ const login = (req, res) => {
                 if (bcrypt.compareSync(req.body.password, foundUser.password)) {
                     req.session.currentUser = foundUser
                     console.log(req.session)
-                    res.status(202).json('Successful login.')
+                    //res.status(202).json('Successful login.')
+                    return res.status(200).json(foundUser)
                 } else {
                     res.status(404).json({ error: 'Invalid credentials.' })
                 }
