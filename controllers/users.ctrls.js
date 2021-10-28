@@ -60,7 +60,7 @@ const logout = (req, res) => {
         })
         res.status(202).json('Successful logout.')
     } else {
-        res.status(404).json({ error: 'No user login found.' })
+        res.status(400).json({ error: 'No user login found.' })
     }
 }
 
@@ -159,6 +159,8 @@ const editUser = (req, res) => {
                 res.status(202).json(updated)
             }
         })
+    } else {
+        res.status(400).json({error: error.message})
     }
 }
 
