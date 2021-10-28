@@ -9,9 +9,11 @@ const PORT = process.env.PORT
 
 const app = express()
 
+const MongoDBStore = require('connect-mongodb-session')(session)
+
 require('./config/db.connection')
 
-const whitelist = ["http://localhost:3000"]
+const whitelist = ["http://localhost:3000", process.env.WHITELIST]
 const corsOptions = {
   origin: (origin, callback) => {
     if(whitelist.indexOf(origin) !== -1 || !origin) {
@@ -25,14 +27,39 @@ const corsOptions = {
 
 app.use(cors(corsOptions))
 
+app.set('trust proxy', 1)
+
 app.use(session({
-    secret: 'onetwothree',
-    resave: false,
-    saveUninitialized: false
+  secret: process.env.SECRET_SESSION,
+  resave: false,
+   saveUninitialized: false,
+   store: new MongoDBStore({
+   	uri: process.env.MONGODB_URI,
+   	collection: 'mySessions'
+   }),
+   cookie:{
+   	sameSite: 'none',
+   	secure: true
+   }
 }))
+
+//before deployment for local
+// app.use(session({
+//     secret: 'onetwothree',
+//     resave: false,
+//     saveUninitialized: false
+// }))
 app.use(express.json())
 
+// const isAuthenticated = (req, res, next) => {
+//   if (req.session.currentUser) {
+//       return next()
+//   } else {
+//       res.status(403).json({msg:"login required"})
+//   }
+// }
 
+//app.use('/users', isAuthenticated, routes.users)
 app.use('/users', routes.users)
 
 app.listen(PORT, () => {

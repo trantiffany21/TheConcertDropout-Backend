@@ -11,6 +11,7 @@ const signup = (req, res) => {
         } else {
             req.body.password = bcrypt.hashSync(req.body.password, bcrypt.genSaltSync(10))
 
+            console.log(req.body)
             db.Users.create(req.body, (error, createdAccount) => {
                 if (error) {
                     res.status(400).json({ error: error.message })
@@ -35,6 +36,7 @@ const login = (req, res) => {
             } else if (foundUser) {
                 if (bcrypt.compareSync(req.body.password, foundUser.password)) {
                     req.session.currentUser = foundUser
+                    console.log(req.session.currentUser)
                     foundUser.password = null
                     return res.status(202).json(foundUser)
                 } else {
@@ -65,15 +67,16 @@ const logout = (req, res) => {
 const getUser = (req, res) => {
     console.log('getUser hit')
 
-    if (req.session.currentUser) {
+    // if (req.session.currentUser) {
+        console.log(req.session.currentUser)
         db.Users.find({ username: req.params.username }, (error, user) => {
             if (error) return res.status(400).json({ error: error.message });
 
             return res.status(200).json(user)
         })
-    } else {
-        res.status(404).json({ error: 'No user login found.' })
-    }
+    // } else {
+    //     res.status(404).json({ error: 'No user login found.' })
+    // }
 }
 
 const delUser = (req, res) => {
