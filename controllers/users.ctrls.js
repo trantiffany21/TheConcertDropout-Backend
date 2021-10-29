@@ -30,22 +30,22 @@ const login = (req, res) => {
     // if (req.session.currentUser) {
     //     res.status(400).json({ error: 'You are still logged in.' })
     // } else {
-        db.Users.findOne({ username: req.body.username }, (error, foundUser) => {
-            if (error) {
-                res.status(200).json({ error: error.message })
-            } else if (foundUser) {
-                if (bcrypt.compareSync(req.body.password, foundUser.password)) {
-                    req.session.currentUser = foundUser
-                    console.log(req.session.currentUser)
-                    foundUser.password = null
-                    return res.status(202).json(foundUser)
-                } else {
-                    res.status(404).json({ error: 'Invalid credentials.' })
-                }
+    db.Users.findOne({ username: req.body.username }, (error, foundUser) => {
+        if (error) {
+            res.status(200).json({ error: error.message })
+        } else if (foundUser) {
+            if (bcrypt.compareSync(req.body.password, foundUser.password)) {
+                req.session.currentUser = foundUser
+                console.log(req.session.currentUser)
+                foundUser.password = null
+                return res.status(202).json(foundUser)
             } else {
                 res.status(404).json({ error: 'Invalid credentials.' })
             }
-        })
+        } else {
+            res.status(404).json({ error: 'Invalid credentials.' })
+        }
+    })
     //}
 }
 
@@ -68,12 +68,12 @@ const getUser = (req, res) => {
     console.log('getUser hit')
 
     // if (req.session.currentUser) {
-        console.log(req.session.currentUser)
-        db.Users.find({ username: req.params.username }, (error, user) => {
-            if (error) return res.status(400).json({ error: error.message });
+    console.log(req.session.currentUser)
+    db.Users.find({ username: req.params.username }, (error, user) => {
+        if (error) return res.status(400).json({ error: error.message });
 
-            return res.status(200).json(user)
-        })
+        return res.status(200).json(user)
+    })
     // } else {
     //     res.status(404).json({ error: 'No user login found.' })
     // }
@@ -81,8 +81,8 @@ const getUser = (req, res) => {
 
 const delUser = (req, res) => {
     console.log('delete hit')
-
-    db.Users.findOneAndDelete({ "username": req.session.currentUser.username }, (error, deleted) => {
+    console.log(req.body.id)
+    db.Users.findByIdAndDelete(req.body.id, (error, deleted) => {
         if (error) {
             res.status(400).json({ error: error.message })
         } else {
@@ -90,6 +90,9 @@ const delUser = (req, res) => {
                 if (error) {
                     res.status(400).json({ error: error.message })
                 } else {
+                    if(req.session){
+                        req.session.destroy()
+                    }
                     res.status(202).json(`Successfully deleted: ${deleted}`)
                 }
             })
@@ -148,20 +151,21 @@ const removeArtist = (req, res) => {
 const editUser = (req, res) => {
     console.log('edit account hit')
 
-    if (req.session.currentUser) {
-        req.body.password = bcrypt.hashSync(req.body.password, bcrypt.genSaltSync(10))
-        db.Users.findByIdAndUpdate(req.session.currentUser._id, {
-            $set: { 'email': req.body.email, 'password': req.body.password, 'username': req.body.username }
-        }, { new: true }, (error, updated) => {
-            if (error) {
-                res.status(400).json({ error: error.message })
-            } else {
-                res.status(202).json(updated)
-            }
-        })
-    } else {
-        res.status(400).json({error: error.message})
-    }
+    req.body.password = bcrypt.hashSync(req.body.password, bcrypt.genSaltSync(10))
+    db.Users.findByIdAndUpdate(req.body.id, {
+        $set: { 'email': req.body.email, 'password': req.body.password, 'username': req.body.username }
+    }, { new: true }, (error, updated) => {
+        if (error) {
+            res.status(400).json({ error: error.message })
+        } else {
+            req.session.destroy((error) => {
+                if (error) {
+                    res.status(400).json({ error: error.message })
+                }
+            })
+            res.status(202).json(updated)
+        }
+    })
 }
 
 module.exports = {
