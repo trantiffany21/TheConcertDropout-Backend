@@ -51,15 +51,6 @@ app.use(session({
 // }))
 app.use(express.json())
 
-// const isAuthenticated = (req, res, next) => {
-//   if (req.session.currentUser) {
-//       return next()
-//   } else {
-//       res.status(403).json({msg:"login required"})
-//   }
-// }
-
-//app.use('/users', isAuthenticated, routes.users)
 app.use('/users', routes.users)
 
 app.listen(PORT, () => {
