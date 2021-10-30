@@ -11,6 +11,7 @@ A web app that stores a user's favorite music artists, sports teams, performers,
 - The backend contains a user model storing a user's login information and performers list. Bcrypt was used to maintain security for user passwords.
 - The Bootstrap framework was used for styling of the pages
 - The app is being hosted on MongoDB Atlas and deployed on Heroku
+- Third Party APIs used were Seat Geek and Kanye Rest to fetch performer/event information and Homepage quotes respectively. 
 
 
 ### Upcoming features
