@@ -2,6 +2,13 @@
 
 > Direct Link: https://the-concert-dropout-frontend.herokuapp.com/
 
+## Contributors
+> Tiffany Tran: https://github.com/trantiffany21
+> 
+> Cristian Camacho: https://github.com/CristianCamacho
+> 
+> Abdul Davis: https://github.com/knowid
+
 ## Project Description
 A web app that stores a user's favorite music artists, sports teams, performers, etc. and shows upcoming events they can attend along with various information about the event. The events, performers, and information were pulled from the Seat Geek API (http://platform.seatgeek.com/).
 
